@@ -1,0 +1,11 @@
+## Database Recommendation
+
+For a healthcare startup building a patient management system, MySQL would generally be the better primary database choice. Healthcare systems handle sensitive and highly structured data such as patient records, prescriptions, appointments, billing information, and medical histories. These types of records require strong consistency, strict schema enforcement, and reliable transactions. MySQL provides ACID (Atomicity, Consistency, Isolation, Durability) guarantees, which ensure that medical data remains accurate and consistent even during system failures or concurrent operations. For example, when updating a patient’s prescription and billing record together, both operations must succeed or fail as a single transaction to avoid inconsistencies.
+
+In contrast, MongoDB follows the BASE (Basically Available, Soft state, Eventually consistent) model, which prioritizes availability and scalability over strict consistency. While this makes MongoDB excellent for handling large volumes of flexible or rapidly changing data structures, it may not be ideal for critical healthcare records where data correctness is essential.
+
+From the perspective of the CAP theorem, healthcare systems usually prioritize consistency and partition tolerance (CP) over availability. If a network partition occurs, it is safer for the system to temporarily deny requests rather than risk storing inconsistent patient information.
+
+However, if the healthcare platform later adds a fraud detection module—such as detecting unusual insurance claims or suspicious billing patterns—the recommendation might change slightly. Fraud detection systems often involve analyzing large volumes of semi-structured logs, behavioral data, and event streams. In this case, MongoDB or another NoSQL database could be useful as a complementary system because of its flexible schema and ability to handle high-scale analytics data.
+
+Therefore, the best architecture would likely be a hybrid approach: MySQL for the core patient management system and MongoDB for analytical or fraud detection modules.
