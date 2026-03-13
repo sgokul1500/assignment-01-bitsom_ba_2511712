@@ -1,6 +1,5 @@
--- =========================
+
 -- DIMENSION TABLES
--- =========================
 
 CREATE TABLE dim_date (
     date_id INT PRIMARY KEY,
@@ -22,9 +21,7 @@ CREATE TABLE dim_product (
     category VARCHAR(50)
 );
 
--- =========================
--- FACT TABLE
--- =========================
+ -- FACT TABLE
 
 CREATE TABLE fact_sales (
     sale_id INT PRIMARY KEY,
