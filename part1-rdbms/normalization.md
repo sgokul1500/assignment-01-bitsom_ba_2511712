@@ -1,56 +1,60 @@
-
 ## Anomaly Analysis
 
 ### 1. Insert Anomaly
-In the current flat table structure, it is not possible to insert a new product or sales representative unless an order exists.
+In the flat dataset, product details such as `product_id`, `product_name`, `category`, and `unit_price` appear together with order information.
 
-Example:
-Columns involved:
-product_id, product_name, category, unit_price
+Example columns:
+order_id, product_id, product_name, category, unit_price
 
-If a new product is introduced but no order has been placed yet, there is no way to store that product in the table because the table requires an order_id.
+Example rows from the dataset:
+Rows containing orders like `ORD1114`, `ORD1091`, and `ORD1133` contain both order and product information.
 
-Example rows:
-Rows such as:
-order_id = ORD1114 and ORD1091 contain product information together with order data.  
-If a product has not been ordered yet, no row can be created for it.
+Problem:
+If a new product is introduced but has not yet been ordered, there is no way to store that product in the dataset because the table requires an `order_id`.
 
-Thus, product information depends on order creation, which causes an Insert Anomaly.
+Thus, a product cannot be inserted independently without creating an order, which creates an **Insert Anomaly**.
+
+---
 
 ### 2. Update Anomaly
-Customer information is repeated across multiple rows. If a customer's details change, they must be updated in multiple places.
+Customer information is repeated for every order placed by that customer.
 
-Example:
-Columns involved:
+Example columns:
 customer_id, customer_name, customer_email, customer_city
 
 Example rows:
-Rows containing the same customer_id appear multiple times (for example rows with order_id ORD1114, ORD1091, ORD1133).
+The same `customer_id` appears in multiple orders such as `ORD1114`, `ORD1091`, and `ORD1133`.
 
-If the customer's email changes, every row containing that customer_id must be updated.  
-If one row is missed, inconsistent data will exist.
+Problem:
+If a customer's email or city changes, it must be updated in every row containing that customer.
 
-This leads to an Update Anomaly.
+If one row is missed, inconsistent data will occur.
+
+This results in an **Update Anomaly**.
+
+---
 
 ### 3. Delete Anomaly
-Deleting an order may accidentally remove important information about customers or products.
+Product information is stored only within order rows.
 
-Example:
-Columns involved:
+Example columns:
 product_id, product_name, category
 
+Problem:
 If a product appears in only one order row and that order is deleted, all information about that product will be lost.
 
-For example, deleting the row with a specific order_id would also delete the only stored information about that product.
+For example, deleting the row containing `order_id = ORD1133` would remove the only record containing that product’s information.
 
-This results in a Delete Anomaly.
+This causes a **Delete Anomaly**.
+
+---
 
 ## Normalization Justification
 
-Keeping all data in a single table may appear simple, but it introduces several serious problems related to data redundancy and inconsistency. In the provided dataset, customer information such as customer_name, customer_email, and customer_city is repeated in multiple rows whenever the same customer places multiple orders. This redundancy increases storage usage and creates update anomalies. For example, if a customer's email address changes, every row containing that customer must be updated. If even one row is missed, the database will contain inconsistent data.
+Keeping all data in a single table may appear simple, but it creates significant problems with redundancy and data integrity. In the dataset, customer information such as `customer_name`, `customer_email`, and `customer_city` is repeated every time the customer places a new order. This repetition increases storage requirements and introduces update anomalies. For instance, if a customer's email address changes, every row containing that customer must be updated. Missing even one update would result in inconsistent data.
 
-Similarly, product information such as product_name, category, and unit_price is repeated every time that product appears in an order. If a product price changes, multiple rows must be updated. This increases the chance of errors and makes maintenance difficult.
+Product information is also duplicated across multiple rows. Attributes such as `product_name`, `category`, and `unit_price` appear each time that product is ordered. If the price of a product changes, multiple rows must be updated. This increases the chance of errors and makes the database difficult to maintain.
 
-Another problem occurs when inserting or deleting data. A new product cannot be stored unless an order exists for it, which creates an insert anomaly. Likewise, deleting an order could remove the only record containing a product’s details, causing a delete anomaly.
+Insert and delete operations also become problematic. A new product cannot be stored unless an order exists for it, which leads to insert anomalies. Similarly, deleting an order could remove the only record containing a product’s information, causing a delete anomaly.
 
-By normalizing the database into separate tables such as Customers, Products, Orders, Sales Representatives, and Order Items, each entity is stored only once. This eliminates redundancy, prevents anomalies, and improves data integrity. Therefore, normalization is not over-engineering but a necessary step to ensure a reliable and maintainable database design.
+By normalizing the database into separate tables such as **Customers, Products, SalesReps, Orders, and OrderItems**, each entity is stored only once. This eliminates redundancy, reduces storage usage, prevents anomalies, and improves data consistency. Therefore, normalization is not over-engineering but an essential step in designing a reliable relational database.

@@ -11,6 +11,7 @@ WHERE c.customer_city = 'Mumbai'
 GROUP BY c.customer_name;
 
 
+
 -- Q2: Find the top 3 products by total quantity sold
 
 SELECT 
@@ -23,6 +24,7 @@ ORDER BY total_quantity DESC
 LIMIT 3;
 
 
+
 -- Q3: List all sales representatives and the number of unique customers they have handled
 
 SELECT 
@@ -33,7 +35,8 @@ LEFT JOIN Orders o ON s.sales_rep_id = o.sales_rep_id
 GROUP BY s.sales_rep_name;
 
 
--- Q4: Find all orders where the total value exceeds 10000, sorted by value descending
+
+-- Q4: Find all orders where the total value exceeds 10,000
 
 SELECT 
     o.order_id,
@@ -46,7 +49,8 @@ HAVING total_value > 10000
 ORDER BY total_value DESC;
 
 
--- Q5: Identify any products that have never been ordered
+
+-- Q5: Identify products that have never been ordered
 
 SELECT 
     p.product_name
